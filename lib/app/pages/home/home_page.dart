@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_appBar.dart';
-import 'package:flutter_delivery_app/app/pages/splash/home/home_controller.dart';
-import 'package:flutter_delivery_app/app/pages/splash/home/home_state.dart';
-import 'package:flutter_delivery_app/app/pages/splash/home/widgets/delivery_product_tile.dart';
+import 'package:flutter_delivery_app/app/pages/home/widgets/delivery_product_tile.dart';
 
-import '../../../core/ui/base_state.dart';
+import '../../core/ui/base_state.dart';
+import 'home_controller.dart';
+import 'home_state.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,7 +39,7 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
           state.status.matchAny(
              any: () => hideLoader(),
              loading: () => showLoader(),
-             error: () => {
+             error: () {
              hideLoader();
              showError(state.errorMessage ?? 'Erro não informado');
            }, 

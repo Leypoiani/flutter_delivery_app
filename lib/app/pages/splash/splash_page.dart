@@ -20,9 +20,10 @@ class SplashPage extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: SizedBox(
                   width: context.screenWidth,
-                  height: context.screenHeight,
+                  // height: context.screenHeight,
                   child: Image.asset('assets/Images/lanche.png',
-                      fit: BoxFit.cover)),
+                      fit: BoxFit.cover),
+                      ),
             ),
             Center(
               child: Column(
