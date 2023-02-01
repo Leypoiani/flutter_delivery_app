@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_delivery_app/app/core/ui/helpers/messages.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_appBar.dart';
-import 'package:flutter_delivery_app/app/models/product_model.dart';
 import 'package:flutter_delivery_app/app/pages/splash/home/home_controller.dart';
 import 'package:flutter_delivery_app/app/pages/splash/home/home_state.dart';
 import 'package:flutter_delivery_app/app/pages/splash/home/widgets/delivery_product_tile.dart';
 
 import '../../../core/ui/base_state.dart';
-import '../../../core/ui/helpers/loader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,20 +35,20 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
       ),
       body: BlocConsumer<HomeController, HomeState>(
         listener: (context, state) {
-          // var matchAny = state.status.matchAny(
-          //   any: () => hideLoader(),
-          //   loading: () => showLoader(),
-          // );
+          state.status.matchAny(
+             any: () => hideLoader(),
+             loading: () => showLoader(),
+             error: () => {
+             hideLoader();
+             showError(state.errorMessage ?? 'Erro não informado');
+           }, 
+           );
         },
-        // buildWhen: (previous, current) => current.status.matchAny(
-        //   any: () => false,
-        //   initial: () => true,
-        //   loaded: () => true,
-        //   error: () => {
-        //     hideLoader(),
-        //     showError(state.errorMessage ?? 'Erro não informado')
-        //   },
-        // ),
+         buildWhen: (previous, current) => current.status.matchAny(
+           any: () => false,
+           initial: () => true,
+           loaded: () => true,
+         ),
         builder: (context, state) {
           return Column(children: [
             Expanded(

@@ -7,7 +7,7 @@ import 'package:flutter_delivery_app/app/repositories/products/products_reposito
 class HomeController extends Cubit<HomeState> {
   final ProductRepository _productRepository;
 
-  HomeController(this._productRepository) : super(HomeState.initial());
+  HomeController(this._productRepository) : super(const HomeState.initial());
 
   Future<void> loadProducts() async {
     emit(state.copyWith(status: HomeStateStatus.loading));

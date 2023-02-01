@@ -6,7 +6,7 @@ import 'package:match/match.dart';
 
 import 'package:flutter_delivery_app/app/models/product_model.dart';
 
-//part 'home_state.g.dart';
+part 'home_state.g.dart';
 
 @match
 enum HomeStateStatus {
