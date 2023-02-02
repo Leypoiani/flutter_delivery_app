@@ -1,12 +1,67 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_delivery_app/app/core/extensions/formatter_extension.dart';
 import 'package:flutter_delivery_app/app/core/ui/helpers/size_extensions.dart';
 import 'package:flutter_delivery_app/app/core/ui/styles/text_styles.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_appbar.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_increment_decrement_button.dart';
+import 'package:flutter_delivery_app/app/dto/order_product_dto.dart';
+import 'package:flutter_delivery_app/app/pages/product_detail/product_detail_controller.dart';
 
-class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key});
+import '../../core/ui/base_state.dart';
+import '../../models/product_model.dart';
+
+class ProductDetailPage extends StatefulWidget {
+  final ProductModel product;
+  final OrderProductDto? order;
+
+  const ProductDetailPage({super.key, this.order, required this.product});
+
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState
+    extends BaseState<ProductDetailPage, ProductDetailController> {
+  @override
+  void initState() {
+    super.initState();
+    final amount = widget.order?.amount ?? 1;
+    controller.initial(amount, widget.order != null);
+  }
+
+  void _showConfirmDelete(int amount) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text('Deseja excluir o produto?'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                       Navigator.of(context).pop();
+                    },
+                    child: Text('Cancelar',
+                        style: context.textStyles.textBold
+                            .copyWith(color: Colors.red))),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).pop(
+                      OrderProductDto(
+                        product: widget.product, 
+                        amount: amount),
+                    );
+                  },
+                  child: Text('Confirmar',
+                      style: context.textStyles.textBold
+                          .copyWith(color: Colors.green)),
+                ),
+              ]);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +73,9 @@ class ProductDetailPage extends StatelessWidget {
           Container(
             width: context.screenWidth,
             height: context.percentHeight(.4),
-            decoration: const BoxDecoration(
-              image:
-                  DecorationImage(image: NetworkImage(''), fit: BoxFit.cover),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: NetworkImage(widget.product.image), fit: BoxFit.cover),
             ),
           ),
           const SizedBox(
@@ -29,53 +84,93 @@ class ProductDetailPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              'teste',
+              widget.product.name,
               style: context.textStyles.textExtraBold.copyWith(fontSize: 22),
             ),
           ),
           const SizedBox(
             height: 10,
           ),
-          const Expanded(
+          Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(child: Text('descricao')),
+              child: SingleChildScrollView(
+                  child: Text(widget.product.description)),
             ),
           ),
           const Divider(color: Colors.black),
           Row(
             children: [
-              Container(
-                width: context.percentWidth(.5),
-                height: 68,
-                padding: const EdgeInsets.all(8),
-                child: const DeliveryIncrementDecrementButton(),
-                ),
-              Container(
-                width: context.percentWidth(.5),
-                height: 68,
-                padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  Text('Adicionar', 
-                  style: context.textStyles.textExtraBold.copyWith(fontSize: 13),
-                  ),
-                  const SizedBox(
-                    width: 10,
+              BlocBuilder<ProductDetailController, int>(
+                builder: (context, amount) {
+                  return Container(
+                    width: context.percentWidth(.5),
+                    height: 68,
+                    padding: const EdgeInsets.all(8),
+                    child: DeliveryIncrementDecrementButton(
+                      incrementTap: () {
+                        controller.increment();
+                      },
+                      decrementTap: () {
+                        controller.decrement();
+                      },
+                      amount: amount,
                     ),
-                    Expanded(
-                      child: AutoSizeText(r'R$ 6,99',
-                        maxFontSize: 13,
-                        minFontSize: 5,
-                        maxLines: 1,
-                        style: context.textStyles.textExtraBold
+                  );
+                },
+              ),
+              Container(
+                width: context.percentWidth(.5),
+                height: 68,
+                padding: const EdgeInsets.all(8),
+                child: BlocBuilder<ProductDetailController, int>(
+                  builder: (context, amount) {
+                    return ElevatedButton(
+                      style: amount == 0
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red)
+                          : null,
+                      onPressed: () {
+                        if (amount == 0) {
+                          _showConfirmDelete(amount);
+                        } else {
+                          Navigator.of(context).pop(
+                            OrderProductDto(
+                                product: widget.product, 
+                                amount: amount),
+                          );
+                        }
+                      },
+                      child: Visibility(
+                        visible: amount > 0,
+                        replacement: Text('Excluir produto',
+                            style: context.textStyles.textExtraBold),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Adicionar',
+                              style: context.textStyles.textExtraBold
+                                  .copyWith(fontSize: 13),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: AutoSizeText(
+                                (widget.product.price * amount).currencyPTBR,
+                                maxFontSize: 13,
+                                minFontSize: 5,
+                                maxLines: 1,
+                                style: context.textStyles.textExtraBold,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               )
             ],

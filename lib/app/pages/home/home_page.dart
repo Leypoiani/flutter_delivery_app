@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_appBar.dart';
+import 'package:flutter_delivery_app/app/core/ui/widgets/shopping_bag_widget.dart';
 import 'package:flutter_delivery_app/app/pages/home/widgets/delivery_product_tile.dart';
 
 import '../../core/ui/base_state.dart';
 import 'home_controller.dart';
 import 'home_state.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,11 +16,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends BaseState<HomePage, HomeController> {
-
   @override
   void onReady() {
     controller.loadProducts();
-
   }
 
   @override
@@ -37,33 +35,41 @@ class _HomePageState extends BaseState<HomePage, HomeController> {
       body: BlocConsumer<HomeController, HomeState>(
         listener: (context, state) {
           state.status.matchAny(
-             any: () => hideLoader(),
-             loading: () => showLoader(),
-             error: () {
-             hideLoader();
-             showError(state.errorMessage ?? 'Erro não informado');
-           }, 
-           );
+            any: () => hideLoader(),
+            loading: () => showLoader(),
+            error: () {
+              hideLoader();
+              showError(state.errorMessage ?? 'Erro não informado');
+            },
+          );
         },
-         buildWhen: (previous, current) => current.status.matchAny(
-           any: () => false,
-           initial: () => true,
-           loaded: () => true,
-         ),
+        buildWhen: (previous, current) => current.status.matchAny(
+          any: () => false,
+          initial: () => true,
+          loaded: () => true,
+        ),
         builder: (context, state) {
           return Column(children: [
             Expanded(
               child: ListView.builder(
                 itemCount: state.products.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final products = state.products[index];
+                  final product = state.products[index];
+                  final orders = state.shoppingBag
+                      .where((order) => order.product == product);
                   return DeliveryProductTile(
-                    product: products,
+                    product: product,
+                    orderProductDto: orders.isNotEmpty ? orders.first : null,
                   );
                 },
               ),
+            ),
+            Visibility(
+              visible: state.shoppingBag.isNotEmpty,
+              child: ShoppingBagWidget(bag: state.shoppingBag),
             )
-          ]);
+          ]
+          );
         },
       ),
     );
