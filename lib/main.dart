@@ -5,5 +5,5 @@ import 'app/delivery_app.dart';
 
 void main() async{
   await Env.instance.load();
-  runApp(const DeliveryApp());
+  runApp(DeliveryApp());
 }

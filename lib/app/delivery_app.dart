@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_delivery_app/app/core/global/global_context.dart';
 import 'package:flutter_delivery_app/app/core/provider/application_binding.dart';
 import 'package:flutter_delivery_app/app/pages/auth/login/login_router.dart';
 import 'package:flutter_delivery_app/app/pages/auth/login/register/register_router.dart';
@@ -11,7 +12,10 @@ import 'package:flutter_delivery_app/app/pages/splash/splash_page.dart';
 import 'core/ui/theme/theme_config.dart';
 
 class DeliveryApp extends StatelessWidget {
-  const DeliveryApp({super.key});
+  final _navKey = GlobalKey<NavigatorState>();
+  DeliveryApp({super.key}){
+    GlobalContext.instance.navigatorKey = _navKey;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,7 @@ class DeliveryApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Delivery App', 
         theme: ThemeConfig.theme,
+        navigatorKey: _navKey,
         routes: {
         '/': (context) => const SplashPage(),
         '/home': (context) => HomeRouter.page,

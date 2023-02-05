@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_delivery_app/app/core/global/global_context.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -14,6 +15,7 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
+      GlobalContext.instance.loginExpire();
       handler.next(err);
     } else {
       handler.next(err);
