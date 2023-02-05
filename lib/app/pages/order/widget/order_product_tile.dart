@@ -1,10 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_delivery_app/app/core/extensions/formatter_extension.dart';
 import 'package:flutter_delivery_app/app/core/ui/styles/colors_app.dart';
 import 'package:flutter_delivery_app/app/core/ui/styles/text_styles.dart';
 import 'package:flutter_delivery_app/app/core/ui/widgets/delivery_increment_decrement_button.dart';
 
 import 'package:flutter_delivery_app/app/dto/order_product_dto.dart';
+import 'package:flutter_delivery_app/app/pages/order/order_controller.dart';
 
 class OrderProductTile extends StatelessWidget {
   final int index;
@@ -18,12 +21,13 @@ class OrderProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var finalProduct = orderProduct.product;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Row(
         children: [
           Image.network(
-            '',
+            finalProduct.image,
             width: 100,
             height: 100,
             fit: BoxFit.cover,
@@ -35,7 +39,7 @@ class OrderProductTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'X-Burger',
+                    finalProduct.name,
                     style: context.textStyles.textRegular.copyWith(
                       fontSize: 16,
                     ),
@@ -44,17 +48,24 @@ class OrderProductTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '19',
+                        (orderProduct.amount * finalProduct.price).currencyPTBR,
                         style: context.textStyles.textMedium.copyWith(
                           fontSize: 14,
                           color: context.colors.secondary,
                         ),
                       ),
-                      DeliveryIncrementDecrementButton(
-                          amount: 1,
-                          incrementTap: () {},
-                          decrementTap: (){}
-                          ),
+                      DeliveryIncrementDecrementButton.compact(
+                          amount: orderProduct.amount,
+                          incrementTap: () {
+                            context
+                                .read<OrderController>()
+                                .incrementProduct(index);
+                          },
+                          decrementTap: () {
+                            context
+                                .read<OrderController>()
+                                .decrementProduct(index);
+                          }),
                     ],
                   )
                 ],
