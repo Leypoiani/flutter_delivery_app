@@ -1,16 +1,39 @@
-# flutter_delivery_app
+<h1 align="center"> Vakinha Burger App :cow:</h1>
 
-A new Flutter project.
+<p align="center">
+App de delivery criado no evento **Dart Week** 9ª edição. 
+Dart Week é um evento exclusivo e gratuito, promovido pela Academia do Flutter. <br/>
+</p>
 
-## Getting Started
+<p align="center">
+  <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-projeto">Aprendizado</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-layout">Layout</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+</p>
 
-This project is a starting point for a Flutter application.
+<br>
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Tecnologias utilizadas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Flutter
+- Dart
+- Json Rest Server
+- Bloc / Cubit
+- ValueNotifier
+- Match Pattern
+- Provider
+- Dio HTTP Client
+- Shared Preferences
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## :bulb: O que eu aprendi
+
+- Definição global de theme
+- Requisições HTTP com uso do Dio
+- Provider para injeção de dependências
+- Gerenciamento de estado com Bloc / Cubit
+- Gerenciamento de estado com ValueNotifier
+- Arquitetura MVC aplicada ao Flutter
+
+## 🔖 Layout
+
+[Acesse o layout do Vakinha no figma](<https://www.figma.com/file/02eLp1LEMaZNbolCNBSyKA/Delivery-App?node-id=4777%3A233&t=q7ZB1xFnUaWVCpt0-0>).
