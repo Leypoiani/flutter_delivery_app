@@ -1,7 +1,7 @@
 <h1 align="center"> Vakinha Burger App :cow:</h1>
 
 <p align="center">
-App de delivery criado no evento **Dart Week** 9ª edição. 
+App de delivery criado no evento Dart Week 9ª edição. 
 Dart Week é um evento exclusivo e gratuito, promovido pela Academia do Flutter. <br/>
 </p>
 
